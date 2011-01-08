@@ -1,37 +1,45 @@
 ﻿namespace Nancy.ViewEngines.NHaml
-{    
+{
+    using System;
     using System.IO;
     using System.Text;
     using global::NHaml.TemplateResolution;
 
     public class ViewSource : IViewSource
     {
-        private readonly TextReader textReader;
+        private readonly IViewLocationResult viewLocationResult;
+        private readonly DateTime viewSourceInitialized;
 
-        public ViewSource(TextReader textReader)
+        public ViewSource(IViewLocationResult viewLocationResult)
         {
-            this.textReader = textReader;
+            this.viewLocationResult = viewLocationResult;
+            this.viewSourceInitialized = viewLocationResult.LastModified;
         }
+
+        #region IViewSource Members
 
         public StreamReader GetStreamReader()
         {
-            var text = textReader.ReadToEnd();
-            byte[] bytes = Encoding.UTF8.GetBytes(text);
+            using (var reader = viewLocationResult.Contents)
+            {
+                string text = reader.ReadToEnd();
+                byte[] bytes = Encoding.UTF8.GetBytes(text);
 
-            var memoryStream = new MemoryStream(bytes);
-
-            return new StreamReader(memoryStream);
-        }      
+                var memoryStream = new MemoryStream(bytes);
+                return new StreamReader(memoryStream);
+            }
+        }
 
         public string Path
         {
-            //TODO:
-            get { return "/Unknown"; }
+            get { return viewLocationResult.Location; }
         }
 
         public bool IsModified
         {
-            get { return true; }
+            get { return viewSourceInitialized < viewLocationResult.LastModified; }
         }
+
+        #endregion
     }
 }

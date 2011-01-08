@@ -1,17 +1,34 @@
 ﻿namespace Nancy.ViewEngines.NHaml
 {
     using System.Collections.Generic;
-    using System.IO;
     using global::NHaml;
     using global::NHaml.TemplateResolution;
 
     public class NHamlViewCompiler : IViewCompiler
     {
-        public IView GetCompiledView<TModel>(TextReader textReader)
-        {
-            var templateEngine = new TemplateEngine();
+        private readonly IDictionary<string, ViewSource> viewSources;
+        private readonly TemplateEngine templateEngine;
 
-            var viewSource = new ViewSource(textReader);
+        public NHamlViewCompiler()
+        {
+            this.viewSources = new Dictionary<string, ViewSource>();
+            this.templateEngine = new TemplateEngine(new TemplateOptions {AutoRecompile = true});
+        }
+
+        public IView GetCompiledView<TModel>(IViewLocationResult viewLocationResult)
+        {
+            string location = viewLocationResult.Location;
+
+            ViewSource viewSource;
+            if (viewSources.ContainsKey(location))
+            {
+                viewSource = viewSources[location];
+            }
+            else
+            {
+                viewSource = new ViewSource(viewLocationResult);
+                viewSources.Add(location, viewSource);
+            }
 
             var compiledTemplate = templateEngine.Compile(new List<IViewSource> {viewSource}, typeof (NHamlView<TModel>));
             return (NHamlView<TModel>)compiledTemplate.CreateInstance();
