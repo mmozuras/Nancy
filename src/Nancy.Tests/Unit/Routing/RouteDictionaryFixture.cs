@@ -9,14 +9,14 @@ namespace Nancy.Tests.Unit.Routing
     {
         private readonly RouteDictionary routes;
         private readonly string path;
-        private readonly Func<bool> condition;
+        private readonly Func<IRequest, bool> condition;
         private readonly Func<dynamic, Response> action;
 
         public RouteDictionaryFixture()
         {
             this.routes = new RouteDictionary(new FakeNancyModuleWithoutBasePath(), "GET");
             this.path = "/route/path";
-            this.condition = () => { return true; };
+            this.condition = ir => { return true; };
             this.action = parameters => { return new Response(); };
         }
 
