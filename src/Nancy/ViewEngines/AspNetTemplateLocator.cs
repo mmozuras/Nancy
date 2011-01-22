@@ -5,10 +5,10 @@
 
     public class AspNetTemplateLocator : IViewLocator
     {
-        public IViewLocationResult GetTemplateContents(string viewTemplate)
+        public ViewLocationResult GetTemplateContents(string viewTemplate)
         {
             var path = HostingEnvironment.MapPath(viewTemplate);
-            return new FileViewLocationResult(new FileInfo(path));
+            return new ViewLocationResult(path, new StreamReader(path));
         }
     }
 }
