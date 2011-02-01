@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace Nancy.Demo
+﻿namespace Nancy.Demo
 {
-    public class DemoBootStrapper : DefaultNancyBootStrapper
+    public class DemoBootstrapper : DefaultNancyBootstrapper
     {
         // Overriding this just to show how it works, not actually necessary as autoregister
         // takes care of it all.

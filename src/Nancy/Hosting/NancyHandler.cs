@@ -1,4 +1,4 @@
-﻿namespace Nancy.Hosting
+namespace Nancy.Hosting
 {
     using System.Web;
     using Nancy.Extensions;
@@ -37,7 +37,8 @@
                 context.Request.AppRelativeCurrentExecutionFilePath.Replace("~",""),
                 context.Request.Headers.ToDictionary(),
                 context.Request.InputStream,
-                context.Request.Url.Scheme);
+                context.Request.Url.Scheme,
+                context.Request.Url.Query);
         }
 
         private static void SetNancyResponseToHttpResponse(HttpContextBase context, Response response)

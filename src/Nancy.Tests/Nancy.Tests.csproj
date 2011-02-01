@@ -34,7 +34,8 @@
     <Reference Include="FakeItEasy">
       <HintPath>..\..\dependencies\fakeiteasy\FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Specifications">
+    <Reference Include="Machine.Specifications, Version=0.3.0.0, Culture=neutral, PublicKeyToken=5c474de7a495cff1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\dependencies\mspec\Machine.Specifications.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -67,8 +68,8 @@
     <Compile Include="Specifications\Handling a PUT request.cs" />
     <Compile Include="Specifications\RequestSpec.cs" />
     <Compile Include="Unit\Bootstrapper\DefaultModuleKeyGeneratorFixture.cs" />
-    <Compile Include="Unit\Bootstrapper\NancyBootStrapperBaseFixture.cs" />
-    <Compile Include="Unit\DefaultNancyBootStrapperFixture.cs" />
+    <Compile Include="Unit\Bootstrapper\FakeBootstrapperBaseGetModulesOverride.cs" />
+    <Compile Include="Unit\DefaultNancyBootstrapperFixture.cs" />
     <Compile Include="Unit\DefaultTemplateEngineSelectorFixture.cs" />
     <Compile Include="Unit\Extensions\StringExtensionsFixture.cs" />
     <Compile Include="Unit\HeadResponseFixture.cs" />
@@ -89,6 +90,8 @@
     <Compile Include="Unit\Routing\RouteResolverFixture.cs" />
     <Compile Include="Unit\ViewEngines\ViewEngineFixture.cs" />
     <Compile Include="Unit\ViewEngines\ViewResultFixture.cs" />
+    <Compile Include="xUnitExtensions\SkipException.cs" />
+    <Compile Include="xUnitExtensions\SkippableFactAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nancy\Nancy.csproj">

@@ -4,19 +4,24 @@ namespace Nancy.Formatters
 
     public static class FormatterExtensions
     {
+        public static Response AsImage(this IResponseFormatter formatter, string imagePath)
+        {
+            return new ImageResponse(imagePath);
+        }
+
         public static Response AsJson<TModel>(this IResponseFormatter formatter, TModel model)
         {
             return new JsonResponse<TModel>(model);
         }
 
-        public static Response AsXml<TModel>(this IResponseFormatter formatter, TModel model)
+        public static Response AsRedirect(this IResponseFormatter response, string location)
         {
-            return new XmlResponse<TModel>(model);
+            return new RedirectResponse(location);
         }
 
-        public static Response Image(this IResponseFormatter formatter, string imagePath)
+        public static Response AsXml<TModel>(this IResponseFormatter formatter, TModel model)
         {
-            return new ImageResponse(imagePath);
+            return new XmlResponse<TModel>(model, "application/xml");
         }
     }
 }

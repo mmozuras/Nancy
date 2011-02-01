@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Nancy.Routing;
-using System.Threading;
-using System.Reflection;
-using System.IO;
-using Nancy.Extensions;
-
-namespace Nancy.BootStrapper
+﻿namespace Nancy.Bootstrapper
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using Nancy.Routing;
+    using Nancy.Extensions;
+
     /// <summary>
-    /// Base class for container based BootStrappers.
+    /// Base class for container based Bootstrappers.
     /// 
     /// There are two component lifecycles, an application level one which is guaranteed to be generated at least once (on app startup)
     /// and a request level one which should be guaranteed to be generated per-request. Depending on implementation details the application
     /// lifecycle components may also be generated per request (without any critical issues), but this isn't ideal.
     /// 
-    /// Doesn't have to be used (only INancyBootStrapper is required), but does provide a nice consistent base if possible.
+    /// Doesn't have to be used (only INancyBootstrapper is required), but does provide a nice consistent base if possible.
     /// 
     /// The methods in the base class are all Application level are called as follows:
     /// 
@@ -27,12 +23,12 @@ namespace Nancy.BootStrapper
     /// ConfigureApplicationContainer() - register any application lifecycle dependencies
     /// GetEngineInternal() - construct the container (if required) and resolve INancyEngine
     /// 
-    /// Request level implementations may use <see cref="INancyBootStrapperPerRequestRegistration<TContainer>"/>, or implement custom
+    /// Request level implementations may use <see cref="INancyBootstrapperPerRequestRegistration{TContainer}"/>, or implement custom
     /// lifetime logic. It is preferred that users have the ability to register per-request scoped dependencies, and that instances retrieved
     /// via <see cref="INancyModuleCatalog.GetModuleByKey(string moduleKey)"/> are per-request scoped.
     /// </summary>
     /// <typeparam name="TContainer">Container tyope</typeparam>
-    public abstract class NancyBootStrapperBase<TContainer> : INancyBootStrapper
+    public abstract class NancyBootstrapperBase<TContainer> : INancyBootstrapper
         where TContainer : class
     {
         // Defaults
@@ -66,6 +62,7 @@ namespace Nancy.BootStrapper
         /// </summary>
         protected virtual Type DefaultRouteCacheProvider { get { return typeof(DefaultRouteCacheProvider); } }
 
+        /// <summary>
         /// Gets the configured INancyEngine
         /// </summary>
         /// <returns>Configured INancyEngine</returns>
@@ -138,7 +135,6 @@ namespace Nancy.BootStrapper
 
         /// <summary>
         /// Configure the container (register types) for the application level
-        /// 
         /// <seealso cref="ConfigureRequestContainer"/>
         /// </summary>
         /// <param name="container">Container instance</param>
@@ -149,7 +145,7 @@ namespace Nancy.BootStrapper
         /// <summary>
         /// Register the given module types into the container
         /// </summary>
-        /// <param name="moduleTypes">NancyModule types</param>
+        /// <param name="moduleRegistrationTypes">NancyModule types</param>
         protected abstract void RegisterModules(IEnumerable<ModuleRegistration> moduleRegistrationTypes);
     }
 }
