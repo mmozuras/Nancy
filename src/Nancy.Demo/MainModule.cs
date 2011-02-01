@@ -1,7 +1,6 @@
 namespace Nancy.Demo
 {
     using Nancy.Demo.Models;
-    using Nancy.Formatters;
     using Nancy.ViewEngines;
     using Nancy.ViewEngines.NDjango;
     using Nancy.ViewEngines.Razor;
@@ -16,6 +15,14 @@ namespace Nancy.Demo
                 return View.Razor("~/views/routes.cshtml", routeCacheProvider.GetCache());
             };
 
+            Get["/style/{file}"] = x => {
+                return Response.AsCss("~/Content/" + (string)x.file);
+            };
+
+            Get["/scripts/{file}"] = x => {
+                return Response.AsJs("~/Content/" + (string)x.file);
+            };
+
             // TODO - implement filtering at the RouteDictionary GetRoute level
             Get["/filtered", r => true] = x => {
                 return "This is a route with a filter that always returns true.";
@@ -25,8 +32,16 @@ namespace Nancy.Demo
                 return "This is also a route, but filtered out so should never be hit.";
             };
 
+            Get[@"/(?<foo>\d{2,4})/{bar}"] = x => {
+                return string.Format("foo: {0}<br/>bar: {1}", x.foo, x.bar);
+            };
+
             Get["/test"] = x => {
                 return "Test";
+            };
+
+            Get["/javascript"] = x => {
+                return View.Static("~/views/javascript.html");
             };
 
             Get["/static"] = x => {

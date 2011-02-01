@@ -29,57 +29,74 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.XML" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>Properties\SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="DynamicDictionaryValue.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
-    <Compile Include="BootStrapper\DefaultModuleKeyGenerator.cs" />
-    <Compile Include="BootStrapper\IModuleKeyGenerator.cs" />
-    <Compile Include="BootStrapper\INancyBootStrapper.cs" />
-    <Compile Include="BootStrapper\ModuleRegistrationType.cs" />
-    <Compile Include="BootStrapper\NancyBootStrapperBase.cs" />
-    <Compile Include="BootStrapper\NancyBootStrapperLocator.cs" />
-    <Compile Include="BootStrapper\TypeRegistration.cs" />
+    <Compile Include="Bootstrapper\DefaultModuleKeyGenerator.cs" />
+    <Compile Include="Bootstrapper\IModuleKeyGenerator.cs" />
+    <Compile Include="Bootstrapper\INancyBootstrapper.cs" />
+    <Compile Include="Bootstrapper\ModuleRegistrationType.cs" />
+    <Compile Include="Bootstrapper\NancyBootstrapperBase.cs" />
+    <Compile Include="Bootstrapper\NancyBootstrapperLocator.cs" />
+    <Compile Include="Bootstrapper\TypeRegistration.cs" />
     <Compile Include="Cookies\NancyCookie.cs" />
     <Compile Include="Cookies\INancyCookie.cs" />
-    <Compile Include="DefaultNancyBootStrapper.cs" />
+    <Compile Include="DefaultNancyBootstrapper.cs" />
     <Compile Include="Extensions\NancyExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="FormatterExtensions.cs" />
     <Compile Include="HeadResponse.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
-    <Compile Include="Hosting\NancyHandler.cs" />
-    <Compile Include="Hosting\NancyHttpRequestHandler.cs" />
-    <Compile Include="BootStrapper\INancyBootStrapperPerRequestRegistration.cs" />
+    <Compile Include="Bootstrapper\INancyBootStrapperPerRequestRegistration.cs" />
     <Compile Include="INancyModuleCatalog.cs" />
     <Compile Include="ITemplateEngineSelector.cs" />
     <Compile Include="IResponseFormatter.cs" />
+    <Compile Include="Responses\GenericFileResponse.cs" />
+    <Compile Include="Responses\ImageResponse.cs" />
+    <Compile Include="Responses\JsonResponse.cs" />
+    <Compile Include="Responses\RedirectResponse.cs" />
+    <Compile Include="Responses\StaticFileResponse.cs" />
+    <Compile Include="Responses\XmlResponse.cs" />
     <Compile Include="Routing\DefaultRouteCacheProvider.cs" />
+    <Compile Include="Routing\DefaultRoutePatternMatcher.cs" />
     <Compile Include="Routing\IRouteCache.cs" />
     <Compile Include="Routing\IRouteCacheProvider.cs" />
     <Compile Include="Routing\DefaultRouteCache.cs" />
+    <Compile Include="Routing\IRoutePatternMatcher.cs" />
+    <Compile Include="Routing\IRoutePatternMatchResult.cs" />
+    <Compile Include="Routing\MethodNotAllowedRoute.cs" />
     <Compile Include="Routing\RouteCacheEntry.cs" />
+    <Compile Include="Routing\RoutePatternMatchResult.cs" />
     <Compile Include="TinyIoc\TinyIoC.cs" />
     <Compile Include="ViewEngines\IViewEngine.cs" />
     <Compile Include="ViewEngines\IViewEngineRegistry.cs" />
     <Compile Include="DefaultTemplateEngineSelector.cs" />
     <Compile Include="NancyModule.cs" />
     <Compile Include="INancyEngine.cs" />
-    <Compile Include="IRequest.cs" />
+    <Compile Include="Request.cs" />
     <Compile Include="NancyEngine.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="NotFoundResponse.cs" />
     <Compile Include="Routing\IRoute.cs" />
     <Compile Include="Routing\IRouteResolver.cs" />
-    <Compile Include="Routing\NoMatchingRouteFoundRoute.cs" />
+    <Compile Include="Routing\NotFoundRoute.cs" />
     <Compile Include="Routing\Route.cs" />
     <Compile Include="Routing\RouteDescription.cs" />
     <Compile Include="Routing\RouteDictionary.cs" />

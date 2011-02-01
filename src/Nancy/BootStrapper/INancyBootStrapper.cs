@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Nancy.BootStrapper
+﻿namespace Nancy.Bootstrapper
 {
     /// <summary>
-    /// BootStrapper for the Nancy Engine
+    /// Bootstrapper for the Nancy Engine
     /// </summary>
-    public interface INancyBootStrapper
+    public interface INancyBootstrapper
     {
         /// <summary>
         /// Gets the configured INancyEngine

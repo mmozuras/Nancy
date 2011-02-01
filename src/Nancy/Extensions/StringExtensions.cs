@@ -1,3 +1,6 @@
+using System.Linq;
+using System.Web;
+
 namespace Nancy.Extensions
 {
     using System;
@@ -12,7 +15,7 @@ namespace Nancy.Extensions
         /// <value>A <see cref="Regex"/> object.</value>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly Regex ParameterExpression =
-            new Regex(@"\{(?<name>[A-Z0-9]*)\}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            new Regex(@"^\{(?<name>[A-Z0-9]*)\}", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
         /// <summary>
         /// Extracts the name of a parameter from a segment.
@@ -46,6 +49,20 @@ namespace Nancy.Extensions
                 ParameterExpression.Match(segment);
 
             return parameterMatch.Success;
+        }
+
+        /// <summary>
+        /// Gets a dynamic dictionary back from a Uri query string
+        /// </summary>
+        /// <param name="queryString">The query string to extract values from</param>
+        /// <returns>A dynamic dictionary containing the query string values</returns>
+        public static DynamicDictionary AsQueryDictionary(this string queryString)
+        {
+            var coll = HttpUtility.ParseQueryString(queryString);
+            var ret = new DynamicDictionary();
+            foreach (var key in coll.AllKeys.Where(key => key != null)) 
+                ret[key] = coll[key];
+            return ret;
         }
     }
 }

@@ -1,7 +1,7 @@
-using System;
-
-namespace Nancy.BootStrapper
+namespace Nancy.Bootstrapper
 {
+    using System;
+
     /// <summary>
     /// Default ModuleKey generator - uses moduleType.FullName
     /// </summary>

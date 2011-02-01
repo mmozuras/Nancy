@@ -34,13 +34,15 @@
     <Reference Include="FakeItEasy">
       <HintPath>..\..\dependencies\fakeiteasy\FakeItEasy.dll</HintPath>
     </Reference>
-    <Reference Include="Machine.Specifications">
+    <Reference Include="Machine.Specifications, Version=0.3.0.0, Culture=neutral, PublicKeyToken=5c474de7a495cff1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\dependencies\mspec\Machine.Specifications.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
+    <Reference Include="System.XML" />
     <Reference Include="xunit">
       <HintPath>..\..\dependencies\xunit\xunit.dll</HintPath>
     </Reference>
@@ -59,6 +61,8 @@
     <Compile Include="Fakes\FakeRoute.cs" />
     <Compile Include="Fakes\FakeRouteResolver.cs" />
     <Compile Include="Fakes\FakeViewEngineRegistry.cs" />
+    <Compile Include="Fakes\Person.cs" />
+    <Compile Include="Unit\JsonFormatterExtensionsFixtures.cs" />
     <Compile Include="Specifications\Handling a HEAD request.cs" />
     <Compile Include="Specifications\Handling a DELETE request.cs" />
     <Compile Include="Specifications\Handling a GET request.cs" />
@@ -67,12 +71,13 @@
     <Compile Include="Specifications\Handling a PUT request.cs" />
     <Compile Include="Specifications\RequestSpec.cs" />
     <Compile Include="Unit\Bootstrapper\DefaultModuleKeyGeneratorFixture.cs" />
-    <Compile Include="Unit\Bootstrapper\NancyBootStrapperBaseFixture.cs" />
-    <Compile Include="Unit\DefaultNancyBootStrapperFixture.cs" />
+    <Compile Include="Unit\Bootstrapper\FakeBootstrapperBaseGetModulesOverride.cs" />
+    <Compile Include="Unit\DefaultNancyBootstrapperFixture.cs" />
     <Compile Include="Unit\DefaultTemplateEngineSelectorFixture.cs" />
+    <Compile Include="Unit\DynamicDictionaryValueFixture.cs" />
     <Compile Include="Unit\Extensions\StringExtensionsFixture.cs" />
+    <Compile Include="Fakes\FakeDefaultNancyBootstrapper.cs" />
     <Compile Include="Unit\HeadResponseFixture.cs" />
-    <Compile Include="Unit\Hosting\HancyHandlerFixture.cs" />
     <Compile Include="Unit\NancyCookieFixture.cs" />
     <Compile Include="Unit\NancyEngineFixture.cs" />
     <Compile Include="Unit\NancyModuleFixture.cs" />
@@ -80,15 +85,23 @@
     <Compile Include="Fakes\FakeModuleKeyGenerator.cs" />
     <Compile Include="Fakes\FakeModuleCatalog.cs" />
     <Compile Include="Unit\Routing\DefaultRouteCacheProviderFixture.cs" />
-    <Compile Include="Unit\Routing\NoMatchingRouteFixture.cs" />
+    <Compile Include="Unit\Routing\DefaultRoutePatternMatcherFixture.cs" />
+    <Compile Include="Fakes\FakeRoutePatternMatchResult.cs" />
+    <Compile Include="Fakes\FakeRouteCache.cs" />
+    <Compile Include="Fakes\FakeNancyModule.cs" />
+    <Compile Include="Fakes\FakeRequest.cs" />
+    <Compile Include="Unit\Routing\NotFoundRouteFixture.cs" />
     <Compile Include="Unit\ResponseFixture.cs" />
     <Compile Include="Unit\Routing\RouteCacheFixture.cs" />
     <Compile Include="Unit\Routing\RouteDictionaryFixture.cs" />
     <Compile Include="Unit\Routing\RouteFixture.cs" />
     <Compile Include="Unit\DynamicDictionaryFixture.cs" />
-    <Compile Include="Unit\Routing\RouteResolverFixture.cs" />
+    <Compile Include="Unit\Routing\DefaultRouteResolverFixture.cs" />
     <Compile Include="Unit\ViewEngines\ViewEngineFixture.cs" />
     <Compile Include="Unit\ViewEngines\ViewResultFixture.cs" />
+    <Compile Include="Unit\XmlFormatterExtensionsFixtures.cs" />
+    <Compile Include="xUnitExtensions\SkipException.cs" />
+    <Compile Include="xUnitExtensions\SkippableFactAttribute.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Nancy\Nancy.csproj">

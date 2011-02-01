@@ -1,28 +1,14 @@
-﻿#region Using Directives
-
-using System;
-using System.Collections.Generic;
-using Nancy;
-using Nancy.BootStrapper;
-using Nancy.Routing;
-using Ninject.Activation.Caching;
-using Ninject.Components;
-using Ninject.Extensions.ChildKernel;
-using Ninject.Infrastructure;
-using Ninject.Modules;
-using Ninject.Parameters;
-using Ninject.Planning.Bindings;
-using Ninject.Syntax;
-using IRequest = Ninject.Activation.IRequest;
-using Request = Ninject.Activation.Request;
-using Ninject;
-
-#endregion
-
-namespace Nancy.BootStrappers.Ninject
+﻿namespace Nancy.Bootstrappers.Ninject
 {
-    public class NinjectNancyBootStrapper : NancyBootStrapperBase<IKernel>,
-                                            INancyBootStrapperPerRequestRegistration<IKernel>,
+    using System;
+    using System.Collections.Generic;
+    using global::Ninject;
+    using global::Ninject.Extensions.ChildKernel;
+    using Nancy.Bootstrapper;
+    using Nancy.Routing;
+
+    public class NinjectNancyBootstrapper : NancyBootstrapperBase<IKernel>,
+                                            INancyBootstrapperPerRequestRegistration<IKernel>,
                                             INancyModuleCatalog
     {
         protected IKernel _Kernel;
@@ -165,7 +151,7 @@ namespace Nancy.BootStrappers.Ninject
         //    /// <param name = "isOptional"><c>True</c> if the request is optional; otherwise, <c>false</c>.</param>
         //    /// <param name = "isUnique"><c>True</c> if the request should return a unique result; otherwise, <c>false</c>.</param>
         //    /// <returns>The created request.</returns>
-        //    public override IRequest CreateRequest(Type service,
+        //    public override Request CreateRequest(Type service,
         //                                            Func<IBindingMetadata, bool> constraint,
         //                                            IEnumerable<IParameter> parameters,
         //                                            bool isOptional,
