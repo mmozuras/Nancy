@@ -1,7 +1,6 @@
 namespace Nancy.Demo
 {
     using Nancy.Demo.Models;
-    using Nancy.ViewEngines;
     using Nancy.Routing;
 
     public class MainModule : NancyModule
