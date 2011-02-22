@@ -53,6 +53,7 @@
     <Content Include="Content\main.css" />
     <Content Include="Content\scripts.js" />
     <Content Include="Views\javascript.html" />
+    <EmbeddedResource Include="Views\static-embedded.html" />
     <Content Include="Views\static.htm" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -76,6 +77,7 @@
     <Compile Include="MainModule.cs" />
     <Compile Include="Models\RatPack.cs" />
     <Compile Include="Models\RatPackWithDependencyText.cs" />
+    <Compile Include="Models\SomeViewModel.cs" />
     <Compile Include="RequestDependencyClass.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +106,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Views\embedded.django" />
+    <Content Include="Views\someview.cshtml" />
     <None Include="Views\razor-dependency.cshtml" />
     <None Include="Views\routes.cshtml" />
     <None Include="Views\spark.spark" />
