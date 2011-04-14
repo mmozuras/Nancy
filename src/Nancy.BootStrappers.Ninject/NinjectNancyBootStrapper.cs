@@ -4,6 +4,7 @@
     using System.Collections.Generic;
     using global::Ninject;
     using global::Ninject.Extensions.ChildKernel;
+    using ModelBinding;
     using Nancy.Bootstrapper;
     using Nancy.Routing;
     using Nancy.ViewEngines;
@@ -63,6 +64,30 @@
             foreach (var viewSourceProvider in viewSourceProviderTypes)
             {
                 container.Bind(typeof(IViewSourceProvider)).To(viewSourceProvider).InSingletonScope();
+            }
+        }
+
+        protected override void RegisterModelBinders(IKernel container, IEnumerable<Type> modelBinderTypes)
+        {
+            foreach (var modelBinder in modelBinderTypes)
+            {
+                container.Bind(typeof(IModelBinder)).To(modelBinder).InSingletonScope();
+            }
+        }
+
+        protected override void RegisterTypeConverters(IKernel container, IEnumerable<Type> typeConverterTypes)
+        {
+            foreach (var typeConverter in typeConverterTypes)
+            {
+                container.Bind(typeof(ITypeConverter)).To(typeConverter).InSingletonScope();
+            }
+        }
+
+        protected override void RegisterBodyDeserializers(IKernel container, IEnumerable<Type> bodyDeserializerTypes)
+        {
+            foreach (var bodyDeserializer in bodyDeserializerTypes)
+            {
+                container.Bind(typeof(IBodyDeserializer)).To(bodyDeserializer).InSingletonScope();
             }
         }
 

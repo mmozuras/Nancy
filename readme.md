@@ -111,6 +111,7 @@ Nancy is not a one man project and many of the features that are availble would 
 * [Chris Nicola](http://github.com/lucisferre)
 * [David Hong](http://github.com/davidhong)
 * [Graeme Foster](http://github.com/GraemeF)
+* [Guido Tapia](http://github.com/gatapia)
 * [Ian Davis](http://github.com/innovatian)
 * [Jonas Cannehag](http://github.com/knecke)
 * [José F. Romaniello](http://github.com/jfromaniello)
@@ -123,6 +124,7 @@ Nancy is not a one man project and many of the features that are availble would 
 * [John Downey](http://github.com/jtdowney)
 * [Maciej Kowalewski](http://github.com/maciejk)
 * [Mindaugas Mozûras](http://github.com/mmozuras)
+* [Patrik Hägne](http://github.com/patrik-hagne)
 * [Pedro Felix](http://github.com/pmhsfelix)
 * [Piotr Wlodek](http://github.com/pwlodek)
 * [Phil Haack](http://github.com/haacked)
@@ -134,7 +136,7 @@ Nancy is not a one man project and many of the features that are availble would 
 
 ## Copyright
 
-Copyright © 2010 Andreas Håkansson and contributors
+Copyright © 2010 Andreas Håkansson, Steven Robbins and contributors
 
 ## License
 

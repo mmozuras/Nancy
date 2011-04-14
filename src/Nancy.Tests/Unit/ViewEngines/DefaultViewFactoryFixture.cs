@@ -1,5 +1,3 @@
-using Nancy.Tests.Fakes;
-
 namespace Nancy.Tests.Unit.ViewEngines
 {
     using System;
@@ -8,6 +6,7 @@ namespace Nancy.Tests.Unit.ViewEngines
     using System.Linq;
     using FakeItEasy;
     using Nancy.ViewEngines;
+    using Nancy.Tests.Fakes;
     using Xunit;
 
     public class DefaultViewFactoryFixture
@@ -30,6 +29,48 @@ namespace Nancy.Tests.Unit.ViewEngines
         }
 
         [Fact]
+        public void Should_throw_argumentnullexception_when_rendering_view_and_module_is_null()
+        {
+            // Given
+            var factory = this.CreateFactory(null);
+
+            // When
+            var exception =
+                Record.Exception(() => factory.RenderView(null, "foobar", new object()));
+
+            // Then
+            exception.ShouldBeOfType<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void Should_throw_argumentexception_when_rendering_view_and_view_name_is_empty_and_model_is_null()
+        {
+            // Given
+            var factory = this.CreateFactory(null);
+
+            // When
+            var exception =
+                Record.Exception(() => factory.RenderView(new FakeNancyModule(), string.Empty, null));
+
+            // Then
+            exception.ShouldBeOfType<ArgumentException>();
+        }
+
+        [Fact]
+        public void Should_throw_argumentexception_when_rendering_view_and_both_viewname_and_model_is_null()
+        {
+            // Given
+            var factory = this.CreateFactory(null);
+
+            // When
+            var exception =
+                Record.Exception(() => factory.RenderView(new FakeNancyModule(), null, null));
+
+            // Then
+            exception.ShouldBeOfType<ArgumentException>();
+        }
+
+        [Fact]
         public void Should_ignore_case_when_getting_distinct_list_of_supported_view_engine_extensions()
         {
             // Given
@@ -49,7 +90,7 @@ namespace Nancy.Tests.Unit.ViewEngines
 
             // Then
             A.CallTo(() => this.locator.GetViewLocation("foo",
-                A<IEnumerable<string>>.That.IsSameSequenceAs(expectedViewEngineExtensions).Argument)).MustHaveHappened();
+                A<IEnumerable<string>>.That.IsSameSequenceAs(expectedViewEngineExtensions))).MustHaveHappened();
         }
 
         [Fact]
@@ -72,7 +113,7 @@ namespace Nancy.Tests.Unit.ViewEngines
 
             // Then
             A.CallTo(() => this.locator.GetViewLocation("foo", 
-                A<IEnumerable<string>>.That.Matches(x => expectedViewEngineExtensions.All(y => x.Contains(y))).Argument)).MustHaveHappened();
+                A<IEnumerable<string>>.That.Matches(x => expectedViewEngineExtensions.All(y => x.Contains(y))))).MustHaveHappened();
         }
 
         [Fact]
@@ -85,7 +126,7 @@ namespace Nancy.Tests.Unit.ViewEngines
             var action = factory["viewname.html"];
 
             // Then)
-            A.CallTo(() => this.locator.GetViewLocation("viewname", A<IEnumerable<string>>.Ignored.Argument)).MustHaveHappened();
+            A.CallTo(() => this.locator.GetViewLocation("viewname", A<IEnumerable<string>>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
@@ -93,7 +134,7 @@ namespace Nancy.Tests.Unit.ViewEngines
         {
             var factory = this.CreateFactory();
             
-            A.CallTo(() => this.locator.GetViewLocation(A<string>.Ignored, A<IEnumerable<string>>.Ignored.Argument)).Returns(null);
+            A.CallTo(() => this.locator.GetViewLocation(A<string>.Ignored, A<IEnumerable<string>>.Ignored)).Returns(null);
 
             var action = factory["foo"];
             var stream = new MemoryStream();
@@ -167,7 +208,7 @@ namespace Nancy.Tests.Unit.ViewEngines
 
             // Then
             A.CallTo(() => this.locator.GetViewLocation(A<string>.Ignored,
-                A<IEnumerable<string>>.That.IsSameSequenceAs(expectedViewEngineExtensions).Argument)).MustHaveHappened();
+                A<IEnumerable<string>>.That.IsSameSequenceAs(expectedViewEngineExtensions))).MustHaveHappened();
         }
 
         [Fact]
@@ -183,7 +224,7 @@ namespace Nancy.Tests.Unit.ViewEngines
             A.CallTo(() => viewEngines[1].Extensions).Returns(new[] { "html" });
 
             var location = new ViewLocationResult(string.Empty, "html", null);
-            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored.Argument)).Returns(location);
+            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored)).Returns(location);
 
             var factory = this.CreateFactory(viewEngines);
 
@@ -205,7 +246,7 @@ namespace Nancy.Tests.Unit.ViewEngines
             A.CallTo(() => viewEngines[0].Extensions).Returns(new[] { "HTML" });
 
             var location = new ViewLocationResult(string.Empty, "html", null);
-            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored.Argument)).Returns(location);
+            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored)).Returns(location);
 
             var factory = this.CreateFactory(viewEngines);
 
@@ -221,7 +262,7 @@ namespace Nancy.Tests.Unit.ViewEngines
         {
             // Given
             var location = new ViewLocationResult(string.Empty, "html", null);
-            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored.Argument)).Returns(location);
+            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored)).Returns(location);
 
             var stream = new MemoryStream();
             var factory = this.CreateFactory();
@@ -248,7 +289,7 @@ namespace Nancy.Tests.Unit.ViewEngines
             A.CallTo(() => viewEngines[0].RenderView(A<ViewLocationResult>.Ignored, null)).Returns(actionReturnedFromEngine);
 
             var location = new ViewLocationResult(string.Empty, "html", null);
-            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored.Argument)).Returns(location);
+            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored)).Returns(location);
 
             var factory = this.CreateFactory(viewEngines);
 
@@ -270,7 +311,7 @@ namespace Nancy.Tests.Unit.ViewEngines
             A.CallTo(() => viewEngines[0].RenderView(A<ViewLocationResult>.Ignored, null)).Throws(new Exception());
 
             var location = new ViewLocationResult(string.Empty, "html", null);
-            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored.Argument)).Returns(location);
+            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored)).Returns(location);
 
             var stream = new MemoryStream();
             var factory = this.CreateFactory(viewEngines);
@@ -295,7 +336,7 @@ namespace Nancy.Tests.Unit.ViewEngines
             A.CallTo(() => viewEngines[0].RenderView(A<ViewLocationResult>.Ignored, null)).Throws(new Exception());
 
             var location = new ViewLocationResult(string.Empty, "html", null);
-            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored.Argument)).Returns(location);
+            A.CallTo(() => this.locator.GetViewLocation("foo", A<IEnumerable<string>>.Ignored)).Returns(location);
 
             var model = new object();
             var factory = this.CreateFactory(viewEngines);
@@ -317,7 +358,7 @@ namespace Nancy.Tests.Unit.ViewEngines
             var action = factory[new object()];
 
             // Then
-            A.CallTo(() => this.locator.GetViewLocation("Object", A<IEnumerable<string>>.Ignored.Argument)).MustHaveHappened();
+            A.CallTo(() => this.locator.GetViewLocation("Object", A<IEnumerable<string>>.Ignored)).MustHaveHappened();
         }
 
         [Fact]
@@ -330,7 +371,7 @@ namespace Nancy.Tests.Unit.ViewEngines
             var action = factory[new ViewModel()];
 
             // Then
-            A.CallTo(() => this.locator.GetViewLocation("View", A<IEnumerable<string>>.Ignored.Argument)).MustHaveHappened();
+            A.CallTo(() => this.locator.GetViewLocation("View", A<IEnumerable<string>>.Ignored)).MustHaveHappened();
         }
     }
 }

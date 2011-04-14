@@ -62,9 +62,20 @@
     <Compile Include="Fakes\FakeNancyModuleWithPreAndPostHooks.cs" />
     <Compile Include="Fakes\FakeRoute.cs" />
     <Compile Include="Fakes\FakeRouteResolver.cs" />
+    <Compile Include="Fakes\FakeSessionObjectFormatter.cs" />
+    <Compile Include="Fakes\FakeHookedModule.cs" />
     <Compile Include="Fakes\Person.cs" />
     <Compile Include="Fakes\ViewModel.cs" />
+    <Compile Include="MimeType\MimeTypesFixture.cs" />
     <Compile Include="NancyContextFixture.cs" />
+    <Compile Include="Resources\Views\SuperSimpleViewEngineSampleContent.cs" />
+    <Compile Include="Responses\ResponseConsistencyFixture.cs" />
+    <Compile Include="Unit\Cryptography\DefaultHmacProviderFixture.cs" />
+    <Compile Include="Unit\Cryptography\HmacComparerFixture.cs" />
+    <Compile Include="Unit\HttpMultipartBoundaryFixture.cs" />
+    <Compile Include="Unit\HttpMultipartBufferFixture.cs" />
+    <Compile Include="Unit\HttpMultipartFixture.cs" />
+    <Compile Include="Unit\IO\RequestStreamFixture.cs" />
     <Compile Include="Unit\JsonFormatterExtensionsFixtures.cs" />
     <Compile Include="Specifications\Handling a HEAD request.cs" />
     <Compile Include="Specifications\Handling a DELETE request.cs" />
@@ -80,6 +91,14 @@
     <Compile Include="Unit\Extensions\StringExtensionsFixture.cs" />
     <Compile Include="Fakes\FakeDefaultNancyBootstrapper.cs" />
     <Compile Include="Unit\HeadResponseFixture.cs" />
+    <Compile Include="Unit\ModelBinding\DefaultBinderFixture.cs" />
+    <Compile Include="Unit\ModelBinding\DefaultBodyDeserializers\JsonBodyDeserializerFixture.cs" />
+    <Compile Include="Unit\ModelBinding\DefaultBodyDeserializers\XmlBodyDeserializerfixture.cs" />
+    <Compile Include="Unit\ModelBinding\DefaultConverters\CollectionConverterFixture.cs" />
+    <Compile Include="Unit\ModelBinding\DefaultConverters\FallbackConverterFixture.cs" />
+    <Compile Include="Unit\ModelBinding\DefaultFieldNameConverterFixture.cs" />
+    <Compile Include="Unit\ModelBinding\DynamicModelBinderAdapterFixture.cs" />
+    <Compile Include="Unit\ModelBinding\DefaultModelBinderLocatorFixture.cs" />
     <Compile Include="Unit\NancyCookieFixture.cs" />
     <Compile Include="Unit\NancyEngineFixture.cs" />
     <Compile Include="Unit\NancyModuleFixture.cs" />
@@ -103,6 +122,12 @@
     <Compile Include="Unit\Routing\RouteFixture.cs" />
     <Compile Include="Unit\DynamicDictionaryFixture.cs" />
     <Compile Include="Unit\Routing\DefaultRouteResolverFixture.cs" />
+    <Compile Include="Unit\Security\ModuleSecurityFixture.cs" />
+    <Compile Include="Unit\Sessions\CookieBasedSessionsFixture.cs" />
+    <Compile Include="Unit\Cryptography\DefaultEncryptionProviderFixture.cs" />
+    <Compile Include="Unit\Sessions\DefaultSessionObjectFormatterFixture.cs" />
+    <Compile Include="Unit\Sessions\NullSessionProviderFixture.cs" />
+    <Compile Include="Unit\Sessions\SessionFixture.cs" />
     <Compile Include="Unit\ViewEngines\DefaultViewFactoryFixture.cs" />
     <Compile Include="Unit\ViewEngines\SuperSimpleViewEngineTests.cs" />
     <Compile Include="Unit\ViewEngines\ViewLocatorFixture.cs" />
@@ -118,6 +143,14 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\Views\staticviewresource.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Responses\testfiles\test.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Responses\testfiles\zip.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

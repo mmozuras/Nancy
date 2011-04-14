@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using ModelBinding;
     using Nancy.Routing;
     using Nancy.Extensions;
     using ViewEngines;
@@ -29,7 +30,7 @@
     /// via <see cref="INancyModuleCatalog.GetModuleByKey"/> are per-request scoped.
     /// </summary>
     /// <typeparam name="TContainer">Container tyope</typeparam>
-    public abstract class NancyBootstrapperBase<TContainer> : INancyBootstrapper
+    public abstract class NancyBootstrapperBase<TContainer> : INancyBootstrapper, IApplicationPipelines 
         where TContainer : class
     {
         /// <summary>
@@ -43,6 +44,8 @@
         /// </summary>
         protected NancyBootstrapperBase()
         {
+            AppDomainAssemblyTypeScanner.LoadNancyAssemblies();
+
             this.BeforeRequest = new BeforePipeline();
             this.AfterRequest = new AfterPipeline();
         }
@@ -108,6 +111,26 @@
         protected virtual Type DefaultResponseFormatter { get { return typeof(DefaultResponseFormatter); } }
 
         /// <summary>
+        /// Type passed into RegisterDefaults - override this to switch out default implementations
+        /// </summary>
+        protected virtual Type DefaultModelBinderLocator { get { return typeof(DefaultModelBinderLocator); } }
+
+        /// <summary>
+        /// Type passed into RegisterDefaults - override this to switch out default implementations
+        /// </summary>
+        protected virtual Type DefaultBinder { get { return typeof(DefaultBinder); } }
+
+        /// <summary>
+        /// Type passed into RegisterDefaults - override this to switch out default implementations
+        /// </summary>
+        protected virtual Type DefaultBindingDefaults { get { return typeof(BindingDefaults); } }
+
+        /// <summary>
+        /// Type passed into RegisterDefaults - override this to switch out default implementations
+        /// </summary>
+        protected virtual Type DefaultFieldNameConverter { get { return typeof(DefaultFieldNameConverter); } }
+
+        /// <summary>
         /// <para>
         /// The pre-request hook
         /// </para>
@@ -117,7 +140,7 @@
         /// returned.
         /// </para>
         /// </summary>
-        protected BeforePipeline BeforeRequest { get; set; }
+        public BeforePipeline BeforeRequest { get; set; }
 
         /// <summary>
         /// <para>
@@ -128,7 +151,7 @@
         /// to rewrite the response or add/remove items from the context.
         /// </para>
         /// </summary>
-        protected AfterPipeline AfterRequest { get; set; }
+        public AfterPipeline AfterRequest { get; set; }
 
         /// <summary>
         /// Initialise the bootstrapper. Must be called prior to GetEngine.
@@ -139,6 +162,8 @@
 
             this.ApplicationContainer = this.CreateContainer();
 
+            this.ConfigureApplicationContainer(this.ApplicationContainer);
+            
             this.InitialiseInternal(this.ApplicationContainer);
         }
 
@@ -153,13 +178,14 @@
                 throw new InvalidOperationException("Bootstrapper is not initialised. Call Initialise before GetEngine");
             }
 
-            ConfigureApplicationContainer(this.ApplicationContainer);
-            
             RegisterDefaults(this.ApplicationContainer, BuildDefaults());
             RegisterModules(GetModuleTypes(GetModuleKeyGenerator()));
             RegisterRootPathProvider(this.ApplicationContainer, GetRootPathProvider());
             RegisterViewEngines(this.ApplicationContainer, GetViewEngineTypes());
             RegisterViewSourceProviders(this.ApplicationContainer, GetViewSourceProviders());
+            RegisterModelBinders(this.ApplicationContainer, GetModelBinders());
+            RegisterTypeConverters(this.ApplicationContainer, GetTypeConverters());
+            RegisterBodyDeserializers(this.ApplicationContainer, GetBodyDeserializers());
 
             var engine = GetEngineInternal();
             engine.PreRequestHook = this.BeforeRequest;
@@ -182,7 +208,11 @@
                 new TypeRegistration(typeof(IViewFactory), DefaultViewFactory),
                 new TypeRegistration(typeof(INancyContextFactory), DefaultContextFactory),
                 new TypeRegistration(typeof(INancyModuleBuilder), DefaultNancyModuleBuilder),
-                new TypeRegistration(typeof(IResponseFormatter), DefaultResponseFormatter)
+                new TypeRegistration(typeof(IResponseFormatter), DefaultResponseFormatter),
+                new TypeRegistration(typeof(IModelBinderLocator), DefaultModelBinderLocator), 
+                new TypeRegistration(typeof(IBinder), this.DefaultBinder), 
+                new TypeRegistration(typeof(BindingDefaults), DefaultBindingDefaults), 
+                new TypeRegistration(typeof(IFieldNameConverter), DefaultFieldNameConverter), 
             };
         }
 
@@ -215,11 +245,7 @@
         protected virtual Type GetRootPathProvider()
         {
             var providers =
-                from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                where !assembly.ReflectionOnly
-                where !assembly.IsDynamic
-                from type in assembly.SafeGetExportedTypes()
-                where !type.IsAbstract
+                from type in AppDomainAssemblyTypeScanner.Types
                 where typeof(IRootPathProvider).IsAssignableFrom(type)
                 where !type.Equals(typeof(DefaultRootPathProvider))
                 select type;
@@ -236,15 +262,59 @@
         protected virtual IEnumerable<Type> GetViewSourceProviders()
         {
             var viewSourceProviders =
-                from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                where !assembly.ReflectionOnly
-                where !assembly.IsDynamic
-                from type in assembly.SafeGetExportedTypes()
-                where !type.IsAbstract
+                from type in AppDomainAssemblyTypeScanner.Types
                 where typeof(IViewSourceProvider).IsAssignableFrom(type)
                 select type;
 
             return viewSourceProviders;
+        }
+
+        /// <summary>
+        /// Get all model binders
+        /// </summary>
+        /// <returns>Enumerable of types that implement IModelBinder</returns>
+        protected virtual IEnumerable<Type> GetModelBinders()
+        {
+            var modelBinders =
+                from type in AppDomainAssemblyTypeScanner.Types
+                where typeof(IModelBinder).IsAssignableFrom(type)
+                select type;
+
+            return modelBinders;
+        }
+
+        /// <summary>
+        /// Get all type converters
+        /// </summary>
+        /// <returns>Enumerable of types that implement IModelBinder</returns>
+        protected virtual IEnumerable<Type> GetTypeConverters()
+        {
+            var nancyAssembly = typeof(NancyEngine).Assembly;
+
+            var typeConverters =
+                from type in AppDomainAssemblyTypeScanner.Types
+                where type.Assembly != nancyAssembly
+                where typeof(ITypeConverter).IsAssignableFrom(type)
+                select type;
+
+            return typeConverters;
+        }
+
+        /// <summary>
+        /// Get all body deserializers
+        /// </summary>
+        /// <returns>Enumerable of types that implement IBodyDeserializer</returns>
+        protected virtual IEnumerable<Type> GetBodyDeserializers()
+        {
+            var nancyAssembly = typeof(NancyEngine).Assembly;
+
+            var bodyDeserializers =
+                from type in AppDomainAssemblyTypeScanner.Types
+                where type.Assembly != nancyAssembly
+                where typeof(IBodyDeserializer).IsAssignableFrom(type)
+                select type;
+
+            return bodyDeserializers;
         }
 
         /// <summary>
@@ -255,6 +325,27 @@
         protected abstract void RegisterViewSourceProviders(TContainer container, IEnumerable<Type> viewSourceProviderTypes);
 
         /// <summary>
+        /// Register the model binders into the container
+        /// </summary>
+        /// <param name="container">Container instance</param>
+        /// <param name="modelBinderTypes">Enumerable of types that implement IModelBinder</param>
+        protected abstract void RegisterModelBinders(TContainer container, IEnumerable<Type> modelBinderTypes);
+
+        /// <summary>
+        /// Register the type converters into the container
+        /// </summary>
+        /// <param name="container">Container instance</param>
+        /// <param name="typeConverterTypes">Enumerable of types that implement ITypeConverter</param>
+        protected abstract void RegisterTypeConverters(TContainer container, IEnumerable<Type> typeConverterTypes);
+
+        /// <summary>
+        /// Register the type converters into the container
+        /// </summary>
+        /// <param name="container">Container instance</param>
+        /// <param name="bodyDeserializerTypes">Enumerable of types that implement IBodyDeserializer</param>
+        protected abstract void RegisterBodyDeserializers(TContainer container, IEnumerable<Type> bodyDeserializerTypes);
+
+        /// <summary>
         /// Returns available NancyModule types
         /// </summary>
         /// <returns>IEnumerable containing all NancyModule Type definitions</returns>
@@ -263,11 +354,7 @@
             var moduleType = typeof(NancyModule);
 
             var locatedModuleTypes =
-                from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                where !assembly.ReflectionOnly
-                where !assembly.IsDynamic
-                from type in assembly.SafeGetExportedTypes()
-                where !type.IsAbstract
+                from type in AppDomainAssemblyTypeScanner.Types
                 where moduleType.IsAssignableFrom(type)
                 select new ModuleRegistration(type, moduleKeyGenerator.GetKeyForModuleType(type));
 
@@ -281,11 +368,7 @@
         protected virtual IEnumerable<Type> GetViewEngineTypes()
         {
             var viewEngineTypes =
-                from assembly in AppDomain.CurrentDomain.GetAssemblies()
-                where !assembly.ReflectionOnly
-                where !assembly.IsDynamic
-                from type in assembly.SafeGetExportedTypes()
-                where !type.IsAbstract
+                from type in AppDomainAssemblyTypeScanner.Types
                 where typeof(IViewEngine).IsAssignableFrom(type)
                 select type;
 

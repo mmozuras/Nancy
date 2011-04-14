@@ -5,7 +5,7 @@ using StructureMap;
 namespace Nancy.Bootstrappers.StructureMap
 {
     using System;
-
+    using ModelBinding;
     using Nancy.ViewEngines;
 
     public abstract class StructureMapNancyBootstrapper : NancyBootstrapperBase<IContainer>, INancyBootstrapperPerRequestRegistration<IContainer>, INancyModuleCatalog
@@ -40,6 +40,39 @@ namespace Nancy.Bootstrappers.StructureMap
         protected override void ConfigureApplicationContainer(IContainer existingContainer)
         {
             base.ConfigureApplicationContainer(existingContainer);
+        }
+
+        protected override void RegisterModelBinders(IContainer container, IEnumerable<Type> modelBinderTypes)
+        {
+            _Container.Configure(registry =>
+            {
+                foreach (var modelBinder in modelBinderTypes)
+                {
+                    registry.For(typeof(IModelBinder)).LifecycleIs(InstanceScope.Singleton).Use(modelBinder);
+                }
+            });
+        }
+
+        protected override void RegisterTypeConverters(IContainer container, IEnumerable<Type> typeConverterTypes)
+        {
+            _Container.Configure(registry =>
+            {
+                foreach (var typeConverter in typeConverterTypes)
+                {
+                    registry.For(typeof(ITypeConverter)).LifecycleIs(InstanceScope.Singleton).Use(typeConverter);
+                }
+            });
+        }
+
+        protected override void RegisterBodyDeserializers(IContainer container, IEnumerable<Type> bodyDeserializerTypes)
+        {
+            _Container.Configure(registry =>
+            {
+                foreach (var bodyDeserializer in bodyDeserializerTypes)
+                {
+                    registry.For(typeof(IBodyDeserializer)).LifecycleIs(InstanceScope.Singleton).Use(bodyDeserializer);
+                }
+            });
         }
 
         protected override void RegisterViewSourceProviders(IContainer container, IEnumerable<Type> viewSourceProviderTypes)

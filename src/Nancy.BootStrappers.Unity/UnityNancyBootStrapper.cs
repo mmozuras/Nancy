@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using Microsoft.Practices.Unity;
+    using ModelBinding;
     using Nancy.Bootstrapper;
     using Nancy.ViewEngines;
 
@@ -61,6 +62,30 @@
             }
         }
 
+        protected override void RegisterModelBinders(IUnityContainer container, IEnumerable<Type> modelBinderTypes)
+        {
+            foreach (var modelBinder in modelBinderTypes)
+            {
+                unityContainer.RegisterType(typeof(IModelBinder), modelBinder, new ContainerControlledLifetimeManager());
+            }
+        }
+
+        protected override void RegisterTypeConverters(IUnityContainer container, IEnumerable<Type> typeConverterTypes)
+        {
+            foreach (var typeConverter in typeConverterTypes)
+            {
+                unityContainer.RegisterType(typeof(ITypeConverter), typeConverter, new ContainerControlledLifetimeManager());
+            }
+        }
+
+        protected override void RegisterBodyDeserializers(IUnityContainer container, IEnumerable<Type> bodyDeserializerTypes)
+        {
+            foreach (var bodyDeserializer in bodyDeserializerTypes)
+            {
+                unityContainer.RegisterType(typeof(IBodyDeserializer), bodyDeserializer, new ContainerControlledLifetimeManager());
+            }
+        }
+
         /// <summary>
         ///   Register the given module types into the container
         /// </summary>
@@ -93,6 +118,9 @@
 
             container.RegisterType(typeof(IEnumerable<IViewSourceProvider>), typeof(UnityEnumerableShim<IViewSourceProvider>));
             container.RegisterType(typeof(IEnumerable<IViewEngine>), typeof(UnityEnumerableShim<IViewEngine>));
+            container.RegisterType(typeof(IEnumerable<IModelBinder>), typeof(UnityEnumerableShim<IModelBinder>));
+            container.RegisterType(typeof(IEnumerable<ITypeConverter>), typeof(UnityEnumerableShim<ITypeConverter>));
+            container.RegisterType(typeof(IEnumerable<IBodyDeserializer>), typeof(UnityEnumerableShim<IBodyDeserializer>));
         }
 
         /// <summary>

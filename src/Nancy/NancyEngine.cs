@@ -1,10 +1,8 @@
 ﻿namespace Nancy
 {
     using System;
-    using System.Collections.Generic;
-
+    using System.Threading;
     using Nancy.Routing;
-    using Nancy.ViewEngines;
 
     public class NancyEngine : INancyEngine
     {
@@ -78,6 +76,52 @@
             var context = this.contextFactory.Create();
             context.Request = request;
 
+            this.InvokeRequestLifeCycle(context);
+
+            AddNancyVersionHeaderToResponse(context);
+
+            return context;
+        }
+
+        /// <summary>
+        /// Handles an incoming <see cref="Request"/> async.
+        /// </summary>
+        /// <param name="request">An <see cref="Request"/> instance, containing the information about the current request.</param>
+        /// <param name="onComplete">Delegate to call when the request is complete</param>
+        /// <param name="onError">Deletate to call when any errors occur</param>
+        public void HandleRequest(Request request, Action<NancyContext> onComplete, Action<Exception> onError)
+        {
+            // TODO - potentially do some things sync like the pre-req hooks?
+            // Possibly not worth it as the thread pool is quite clever
+            // when it comes to fast running tasks such as ones where the prehook returns a redirect.
+            ThreadPool.QueueUserWorkItem((s) =>
+                {
+                    try
+                    {
+                        onComplete.Invoke(this.HandleRequest(request));
+                    }
+                    catch (Exception e)
+                    {
+                        onError.Invoke(e);
+                    }
+                });
+        }
+
+        private static void AddNancyVersionHeaderToResponse(NancyContext context)
+        {
+            if (context.Response == null)
+            {
+                return;
+            }
+
+            var version =
+                typeof(INancyEngine).Assembly.GetName().Version;
+
+            context.Response.Headers["Nancy-Version"] = version.ToString();
+        }
+
+        private void InvokeRequestLifeCycle(NancyContext context)
+        {
             this.InvokePreRequestHook(context);
 
             if (context.Response == null)
@@ -89,8 +133,6 @@
             {
                 this.PostRequestHook.Invoke(context);
             }
-
-            return context;
         }
 
         private void InvokePreRequestHook(NancyContext context)
